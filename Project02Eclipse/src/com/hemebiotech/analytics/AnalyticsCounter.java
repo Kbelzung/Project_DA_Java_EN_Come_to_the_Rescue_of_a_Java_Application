@@ -1,43 +1,51 @@
 package com.hemebiotech.analytics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class AnalyticsCounter {
-	private static int headacheCount = 0;	// initialize to 0
-	private static int rashCount = 0;		// initialize to 0
-	private static int pupilCount = 0;		// initialize to 0
 	
 	public static void main(String args[]) throws Exception {
-		// first get input
-		BufferedReader reader = new BufferedReader (new FileReader("symptoms.txt"));
-		String line = reader.readLine();
+		
+		// Read the data from a file to store it into a list 
+		File fileToRead = new File("Project02Eclipse/symptoms.txt");
+		List<String> list = null;
+		try {
+			list = Files.readAllLines(fileToRead.toPath(), Charset.defaultCharset() );
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		int i = 0;	// set i to 0
-		int headCount = 0;	// counts headaches
-		while (line != null) {
-			i++;	// increment i
-			System.out.println("symptom from file: " + line);
-			if (line.equals("headache")) {
-				headCount++;
-				System.out.println("number of headaches: " + headCount);
+		// Put the data in a TreeMap to count each line of data and order it
+		TreeMap<String, Integer> dataMap = new TreeMap<String, Integer>();
+		for (String line : list)
+		{
+			if (dataMap.containsKey(line)) {
+				dataMap.put(line, dataMap.get(line) + 1);
+			} else {
+				dataMap.put(line, 1);
 			}
-			else if (line.equals("rush")) {
-				rashCount++;
-			}
-			else if (line.contains("pupils")) {
-				pupilCount++;
-			}
-
-			line = reader.readLine();	// get another symptom
 		}
 		
-		// next generate output
-		FileWriter writer = new FileWriter ("result.out");
-		writer.write("headache: " + headacheCount + "\n");
-		writer.write("rash: " + rashCount + "\n");
-		writer.write("dialated pupils: " + pupilCount + "\n");
-		writer.close();
+		// Create a new file to store the values
+		File fileToSaveData = new File("result.out");
+		try {
+			
+			FileWriter writer = new FileWriter(fileToSaveData.getPath()); 
+			
+			for(Entry<String, Integer> line : dataMap.entrySet()) {
+				writer.write(line.getKey() + ", " + line.getValue() + ".\r\n");
+			}
+			
+			writer.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 }
