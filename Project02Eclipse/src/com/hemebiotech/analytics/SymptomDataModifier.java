@@ -3,10 +3,25 @@ package com.hemebiotech.analytics;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * Modify a list of data
+ * 
+ * @author k.belzung
+ * @version 1.0
+ */
 public class SymptomDataModifier implements ISymptomDataModifier {
 
+	/**
+	 * List of data to modify
+	 */
 	List<String> listOfData;
 	
+	/**
+	 * Constructor of SymptomDataModifier
+	 * 
+	 * @param list
+	 * 				A list of String to modify
+	 */
 	public SymptomDataModifier(List<String> list) {
 		this.listOfData = list;
 	}
