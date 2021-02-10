@@ -1,51 +1,30 @@
 package com.hemebiotech.analytics;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class AnalyticsCounter {
 	
+	/**
+	 * <b>AnalyticsCounter can process a file with a list of symptoms.</b>
+	 * 
+	 * <p>It can read a file and get all it's data.</p>
+	 * <p>Then convert it to a treeMap to count and order it.</p>
+	 * <p>To finally store it in a file.</p>
+	 * 
+	 * @author k.belzung
+	 * @version 1.2
+	 */
 	public static void main(String args[]) throws Exception {
 		
-		// Read the data from a file to store it into a list 
-		File fileToRead = new File("Project02Eclipse/symptoms.txt");
-		List<String> list = null;
-		try {
-			list = Files.readAllLines(fileToRead.toPath(), Charset.defaultCharset() );
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Put the data in a TreeMap to count each line of data and order it
-		TreeMap<String, Integer> dataMap = new TreeMap<String, Integer>();
-		for (String line : list)
-		{
-			if (dataMap.containsKey(line)) {
-				dataMap.put(line, dataMap.get(line) + 1);
-			} else {
-				dataMap.put(line, 1);
-			}
-		}
+		ISymptomReader fileReader = new ReadSymptomDataFromFile(new File("Project02Eclipse/symptoms.txt"));
+		List<String> listOfSymptoms = fileReader.getSymptoms();
 		
-		// Create a new file to store the values
-		File fileToSaveData = new File("result.out");
-		try {
-			
-			FileWriter writer = new FileWriter(fileToSaveData.getPath()); 
-			
-			for(Entry<String, Integer> line : dataMap.entrySet()) {
-				writer.write(line.getKey() + ", " + line.getValue() + ".\r\n");
-			}
-			
-			writer.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		SymptomDataModifier listModifier = new SymptomDataModifier(listOfSymptoms);
+		TreeMap<String, Integer> listModified = listModifier.countAndOrder();
+
+		ISymptomWriter fileWriter = new WriteSymptomDataToFile(new File("result.out"));
+		fileWriter.saveSymptoms(listModified);
 	}
 }

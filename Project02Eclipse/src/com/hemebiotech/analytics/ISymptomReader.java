@@ -3,18 +3,17 @@ package com.hemebiotech.analytics;
 import java.util.List;
 
 /**
- * Anything that will read symptom data from a source
- * The important part is, the return value from the operation, which is a list of strings,
- * that may contain many duplications
+ * Interface to read symptoms data from any kind of formats
  * 
- * The implementation does not need to order the list
- * 
+ * @author k.belzung
+ * @version 1.1
  */
 public interface ISymptomReader {
+
 	/**
-	 * If no data is available, return an empty List
+	 * Read the data of a file given at the initialization of the reader
 	 * 
-	 * @return a raw listing of all Symptoms obtained from a data source, duplicates are possible/probable
+	 * @return The data of a file with every line in a list of strings 
 	 */
-	List<String> GetSymptoms ();
+	List<String> getSymptoms();
 }
